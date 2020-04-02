@@ -1,0 +1,12 @@
+*.mbox
+*.spec
+build
+dist
+
+env
+venv
+.env
+.venv
+
+.idea
+.vscode
