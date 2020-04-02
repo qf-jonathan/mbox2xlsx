@@ -17,7 +17,7 @@ LAYOUT_SIZES = {
 if platform.system() == 'Windows':
     LAYOUT_SIZES = {
         'column': 26,
-        'progress': 30,
+        'progress': 38,
         'extract': 16,
         'mark_all': 14,
         'unmark_all': 14,
