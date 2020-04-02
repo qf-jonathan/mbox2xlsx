@@ -98,7 +98,7 @@ def get_payload_data(message):
 def proccess_mbox(file_path, date, ito, eto, ifrom, efrom, cc, subject, body, contact_data, attachment, tick_fn=None):
     base_dir, filename = ntpath.split(file_path)
     filename_base = "".join(filename.split(".")[0:-1])
-    end_path = f'{base_dir}/{filename_base}({datetime.now()})'
+    end_path = f'{base_dir}/{filename_base}-{datetime.now():%Y%m%d%H%M%S-%f}'
     mbox = mailbox.mbox(file_path)
     wb = Workbook()
     ws = wb.active
@@ -154,7 +154,7 @@ def proccess_mbox(file_path, date, ito, eto, ifrom, efrom, cc, subject, body, co
                 excel_header_width.append(20)
             body_path = f'{end_path}/adjunto'
             pathlib.Path(body_path).mkdir(exist_ok=True, parents=True)
-            attachment_list = get_payload(message, message_id=f'{curr:0{len_id}}', prefix=body_path)[1:]
+            attachment_list = get_payload(message, message_id=f'{curr:0{len_id}}', prefix=body_path)
             row += attachment_list
             mx_attachment = max(mx_attachment, len(attachment_list) - 1)
         first_row = False

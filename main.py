@@ -2,12 +2,14 @@ import PySimpleGUI as sg
 from mbox_processor import proccess_mbox
 
 sg.ChangeLookAndFeel('BrownBlue')
+sg.SetOptions(element_padding=(0, 0))
 
 layout = [
     [sg.Text('Archivo MBOX')],
-    [sg.InputText(disabled=True), sg.FileBrowse('Seleccionar', file_types=(('MBOX', '*.mbox'),), key='mboxfile')],
+    [sg.InputText(disabled=True, size=(46, 1)),
+     sg.FileBrowse('Seleccionar', file_types=(('MBOX', '*.mbox'),), key='mboxfile', size=(12, 1))],
     [sg.Column([
-        [sg.Text('Cabecera', size=(27, 2), justification='center', text_color=sg.BLUES[0])],
+        [sg.Text('Cabecera', size=(30, 1), justification='center', text_color=sg.BLUES[0])],
         [sg.Checkbox('Incluir Fecha', key='date')],
         [sg.Checkbox('Incluir Destinatario', key='to')],
         [sg.Checkbox('Solo Email', key='to_email_only', pad=(20, 0))],
@@ -15,16 +17,17 @@ layout = [
         [sg.Checkbox('Solo Email', key='from_email_only', pad=(20, 0))],
         [sg.Checkbox('Incluir Con Copia', key='cc')],
         [sg.Checkbox('Incluir Asunto', key='subject')],
-    ], size=(170, None)), sg.VerticalSeparator(), sg.Column([
-        [sg.Text('Contenido', size=(27, 2), justification='center', text_color=sg.BLUES[0])],
+    ]), sg.VerticalSeparator(), sg.Column([
+        [sg.Text('Contenido', size=(30, 1), justification='center', text_color=sg.BLUES[0])],
         [sg.Checkbox('Extraec Datos de Contacto', key='contact_data')],
         [sg.Checkbox('Incluir Cuerpo', key='body')],
         [sg.Checkbox('Incluir Adjuntos', key='attachment')],
-    ], size=(170, None))],
-    [sg.ProgressBar(max_value=100, size=(36, 20), pad=(8, 0), key='progress')],
-    [sg.Button('Extraer', button_color=(sg.BLUES[0], 'green'), size=(10, None)),
-     sg.Button('Marcar Todo'), sg.Button('Desmarcar Todo'),
-     sg.Button('Cerrar', button_color=(sg.BLUES[0], 'red'))]
+    ])],
+    [sg.ProgressBar(max_value=100, size=(37, 20), pad=(4, 4), key='progress')],
+    [sg.Button('Extraer', button_color=(sg.BLUES[0], 'green'), size=(15, None)),
+     sg.Button('Marcar Todo', size=(13, None)),
+     sg.Button('Desmarcar Todo', size=(13, None)),
+     sg.Button('Cerrar', button_color=(sg.BLUES[0], 'red'), size=(6, None))]
 ]
 
 window = sg.Window('MBOX Extractor', layout, resizable=False)
