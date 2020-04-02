@@ -2,6 +2,7 @@ import mailbox
 from email.header import decode_header
 from openpyxl import Workbook
 from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 from mimetypes import guess_extension
 import pathlib
 import uuid
@@ -104,45 +105,53 @@ def proccess_mbox(file_path, date, ito, eto, ifrom, efrom, cc, subject, body, co
     curr, total = 0, len(mbox)
     len_id = len(str(total))
     ws.append([])
-    excel_header, first_row = [], True
+    excel_header, excel_header_width, first_row = [], [], True
     mx_attachment = 0
     for message in mbox:
         row = []
         if date:
             if first_row:
                 excel_header.append('Fecha')
+                excel_header_width.append(8)
             row.append(message['date'])
         if ito:
             if first_row:
                 excel_header.append('Destinatario')
+                excel_header_width.append(15)
             row.append(get_email_header(message, 'to', email_only=eto))
         if ifrom:
             if first_row:
                 excel_header.append('Remitente')
+                excel_header_width.append(15)
             row.append(get_email_header(message, 'from', email_only=efrom))
         if cc:
             if first_row:
                 excel_header.append('Con Copia')
+                excel_header_width.append(15)
             row.append(get_email_header(message, 'cc'))
         if subject:
             if first_row:
                 excel_header.append('Asunto')
+                excel_header_width.append(20)
             row.append(get_subject(message))
         if contact_data:
             if first_row:
                 excel_header.append('Nombre')
                 excel_header.append('Correo')
                 excel_header.append('Whatsapp')
+                excel_header_width += [15, 15, 15]
             row += get_payload_data(message)
         if body and not attachment:
             if first_row:
                 excel_header.append('Contenido')
+                excel_header_width.append(20)
             body_path = f'{end_path}/adjunto'
             pathlib.Path(body_path).mkdir(exist_ok=True, parents=True)
             row += get_payload(message, message_id=f'{curr:0{len_id}}', prefix=body_path, first_only=True)
         elif attachment:
             if first_row:
                 excel_header.append('Contenido')
+                excel_header_width.append(20)
             body_path = f'{end_path}/adjunto'
             pathlib.Path(body_path).mkdir(exist_ok=True, parents=True)
             attachment_list = get_payload(message, message_id=f'{curr:0{len_id}}', prefix=body_path)[1:]
@@ -155,7 +164,9 @@ def proccess_mbox(file_path, date, ito, eto, ifrom, efrom, cc, subject, body, co
             tick_fn(curr, total)
     for i in range(mx_attachment):
         excel_header.append(f'Adjunto {i + 1}')
+        excel_header_width.append(15)
     for i in range(len(excel_header)):
         ws.cell(1, i + 1, excel_header[i]).font = Font(bold=True)
+        ws.column_dimensions[get_column_letter(i + 1)].width = excel_header_width[i]
     pathlib.Path(end_path).mkdir(exist_ok=True)
     wb.save(f'{end_path}/{filename_base}.xlsx')
